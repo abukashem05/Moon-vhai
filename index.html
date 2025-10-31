@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Solar System Calculator</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --light: #ecf0f1;
+            --dark: #34495e;
+            --white: #ffffff;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            overflow: hidden;
+        }
+
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--dark) 100%);
+            color: var(--white);
+            padding: 30px 40px;
+            text-align: center;
+        }
+
+        header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.8em;
+            color: var(--primary);
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .card {
+            background: var(--light);
+            border-radius: var(--border-radius);
+            padding: 25px;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+
+        .card h3 {
+            color: var(--secondary);
+            margin-bottom: 15px;
+            font-size: 1.3em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        .input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: var(--dark);
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .input-group input,
+        .input-group select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: var(--border-radius);
+            font-size: 1em;
+            transition: var(--transition);
+            background: var(--white);
+        }
+
+        .input-group input:focus,
+        .input-group select:focus {
+            outline: none;
+            border-color: var(--secondary);
+            box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+        }
+
+        .input-addon {
+            position: relative;
+        }
+
+        .input-addon input {
+            padding-right: 50px;
+        }
+
+        .input-addon span {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--dark);
+            font-weight: 600;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+
+        .btn {
+            padding: 14px 30px;
+            border: none;
+            border-radius: var(--border-radius);
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            color: var(--white);
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary) 0%, #2980b9 100%);
+        }
+
+        .btn-primary:hover {
+            background: linear-gradient(135deg, #2980b9 0%, var(--secondary) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(52, 152, 219, 0.3);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success) 0%, #229954 100%);
+        }
+
+        .btn-success:hover {
+            background: linear-gradient(135deg, #229954 0%, var(--success) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(39, 174, 96, 0.3);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--accent) 0%, #c0392b 100%);
+        }
+
+        .btn-danger:hover {
+            background: linear-gradient(135deg, #c0392b 0%, var(--accent) 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(231, 76, 60, 0.3);
+        }
+
+        .results {
+            margin-top: 30px;
+            padding: 30px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: var(--border-radius);
+            border-left: 5px solid var(--success);
+        }
+
+        .results h3 {
+            color: var(--primary);
+            margin-bottom: 20px;
+            font-size: 1.5em;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+        }
+
+        .result-item strong {
+            color: var(--dark);
+        }
+
+        .result-item span {
+            color: var(--secondary);
+            font-weight: 600;
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+            border-left: 5px solid var(--secondary);
+            padding: 20px;
+            border-radius: var(--border-radius);
+            margin: 20px 0;
+        }
+
+        .info-box h4 {
+            color: var(--primary);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-box p {
+            color: var(--dark);
+            line-height: 1.8;
+        }
+
+        .footer {
+            background: var(--primary);
+            color: var(--white);
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+        }
+
+        /* Print Styles */
+        @media print {
+            body {
+                background: white;
+                padding: 0;
+            }
+
+            .container {
+                box-shadow: none;
+                max-width: 100%;
+            }
+
+            .button-group {
+                display: none;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .card-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .page-break {
+                page-break-after: always;
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            header h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 20px;
+            }
+
+            .card-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Loading Animation */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Hidden class */
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="content">
+        <header>
+            <h1>
+                <i class="fas fa-solar-panel"></i>
+                Solar System Calculator
+            </h1>
+            <p>Calculate your solar energy requirements and system specifications</p>
+        </header>
+
+        <div class="content">
+            <!-- Information Section -->
+            <div class="section">
+                <div class="info-box">
+                    <h4><i class="fas fa-info-circle"></i> How to Use</h4>
+                    <p>Enter your daily energy consumption, location details, and system preferences. The calculator will determine the optimal solar panel system size, number of panels, battery capacity, and estimated costs.</p>
+                </div>
+            </div>
+
+            <!-- Input Section -->
+            <div class="section">
+                <h2 class="section-title">
+                    <i class="fas fa-keyboard"></i>
+                    System Requirements
+                </h2>
+                <div class="card-grid">
+                    <div class="card">
+                        <h3><i class="fas fa-bolt"></i> Energy Consumption</h3>
+                        <div class="input-group">
+                            <label for="dailyUsage">Daily Energy Usage</label>
+                            <div class="input-addon">
+                                <input type="number" id="dailyUsage" placeholder="Enter daily usage" min="0" step="0.1">
+                                <span>kWh/day</span>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="peakHours">Peak Sun Hours</label>
+                            <div class="input-addon">
+                                <input type="number" id="peakHours" placeholder="Enter peak sun hours" min="0" max="12" step="0.1" value="5">
+                                <span>hours</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fas fa-cog"></i> System Configuration</h3>
+                        <div class="input-group">
+                            <label for="panelWattage">Solar Panel Wattage</label>
+                            <div class="input-addon">
+                                <input type="number" id="panelWattage" placeholder="Enter panel wattage" min="0" step="10" value="300">
+                                <span>W</span>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="systemEfficiency">System Efficiency</label>
+                            <div class="input-addon">
+                                <input type="number" id="systemEfficiency" placeholder="Enter efficiency" min="0" max="100" step="1" value="85">
+                                <span>%</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fas fa-battery-full"></i> Battery Storage</h3>
+                        <div class="input-group">
+                            <label for="backupDays">Backup Days</label>
+                            <div class="input-addon">
+                                <input type="number" id="backupDays" placeholder="Enter backup days" min="0" step="1" value="2">
+                                <span>days</span>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="batteryVoltage">Battery Voltage</label>
+                            <div class="input-addon">
+                                <input type="number" id="batteryVoltage" placeholder="Enter voltage" min="0" step="12" value="48">
+                                <span>V</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3><i class="fas fa-dollar-sign"></i> Cost Estimation</h3>
+                        <div class="input-group">
+                            <label for="panelCost">Cost per Panel</label>
+                            <div class="input-addon">
+                                <input type="number" id="panelCost" placeholder="Enter cost per panel" min="0" step="10" value="200">
+                                <span>$</span>
+                            </div>
+                        </div>
+                        <div class="input-group">
+                            <label for="batteryCost">Cost per kWh Storage</label>
+                            <div class="input-addon">
+                                <input type="number" id="batteryCost" placeholder="Enter cost per kWh" min="0" step="10" value="500">
+                                <span>$/kWh</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Buttons -->
+            <div class="button-group">
+                <button class="btn btn-primary" onclick="calculateSystem()">
+                    <i class="fas fa-calculator"></i>
+                    Calculate System
+                </button>
+                <button class="btn btn-success" onclick="generatePDF()">
+                    <i class="fas fa-file-pdf"></i>
+                    Download PDF Report
+                </button>
+                <button class="btn btn-danger" onclick="resetForm()">
+                    <i class="fas fa-redo"></i>
+                    Reset Form
+                </button>
+            </div>
+
+            <!-- Results Section -->
+            <div id="resultsSection" class="results hidden">
+                <h3><i class="fas fa-chart-line"></i> System Specifications</h3>
+                <div class="result-item">
+                    <strong>Required System Size:</strong>
+                    <span id="systemSize">-</span>
+                </div>
+                <div class="result-item">
+                    <strong>Number of Solar Panels:</strong>
+                    <span id="numPanels">-</span>
+                </div>
+                <div class="result-item">
+                    <strong>Total Panel Capacity:</strong>
+                    <span id="totalCapacity">-</span>
+                </div>
+                <div class="result-item">
+                    <strong>Battery Capacity Required:</strong>
+                    <span id="batteryCapacity">-</span>
+                </div>
+                <div class="result-item">
+                    <strong>Battery Amp Hours:</strong>
+                    <span id="batteryAh">-</span>
+                </div>
+                <div class="result-item">
+                    <strong>Estimated Panel Cost:</strong>
+                    <span id="totalPanelCost">-</span>
+                </div>
+                <div class="result-item">
+                    <strong>Estimated Battery Cost:</strong>
+                    <span id="totalBatteryCost">-</span>
+                </div>
+                <div class="result-item">
+                    <strong>Total System Cost:</strong>
+                    <span id="totalSystemCost">-</span>
+                </div>
+                <div class="result-item">
+                    <strong>Annual Energy Production:</strong>
+                    <span id="annualProduction">-</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>&copy; 2024 Solar System Calculator. Professional Energy Solutions.</p>
+        </div>
+    </div>
+
+    <script>
+        function calculateSystem() {
+            // Get input values
+            const dailyUsage = parseFloat(document.getElementById('dailyUsage').value);
+            const peakHours = parseFloat(document.getElementById('peakHours').value);
+            const panelWattage = parseFloat(document.getElementById('panelWattage').value);
+            const systemEfficiency = parseFloat(document.getElementById('systemEfficiency').value) / 100;
+            const backupDays = parseFloat(document.getElementById('backupDays').value);
+            const batteryVoltage = parseFloat(document.getElementById('batteryVoltage').value);
+            const panelCost = parseFloat(document.getElementById('panelCost').value);
+            const batteryCost = parseFloat(document.getElementById('batteryCost').value);
+
+            // Validate inputs
+            if (isNaN(dailyUsage) || isNaN(peakHours) || isNaN(panelWattage) || isNaN(systemEfficiency)) {
+                alert('Please fill in all required fields with valid numbers.');
+                return;
+            }
+
+            // Calculate system size
+            const systemSizeKW = dailyUsage / (peakHours * systemEfficiency);
+            const systemSizeW = systemSizeKW * 1000;
+
+            // Calculate number of panels
+            const numPanels = Math.ceil(systemSizeW / panelWattage);
+            const totalCapacity = (numPanels * panelWattage / 1000).toFixed(2);
+
+            // Calculate battery capacity
+            const batteryCapacityKWh = dailyUsage * backupDays;
+            const batteryAh = (batteryCapacityKWh * 1000 / batteryVoltage).toFixed(2);
+
+            // Calculate costs
+            const totalPanelCost = numPanels * panelCost;
+            const totalBatteryCost = batteryCapacityKWh * batteryCost;
+            const totalSystemCost = totalPanelCost + totalBatteryCost;
+
+            // Calculate annual production
+            const annualProduction = (systemSizeKW * peakHours * 365 * systemEfficiency).toFixed(2);
+
+            // Display results
+            document.getElementById('systemSize').textContent = systemSizeKW.toFixed(2) + ' kW';
+            document.getElementById('numPanels').textContent = numPanels + ' panels';
+            document.getElementById('totalCapacity').textContent = totalCapacity + ' kW';
+            document.getElementById('batteryCapacity').textContent = batteryCapacityKWh.toFixed(2) + ' kWh';
+            document.getElementById('batteryAh').textContent = batteryAh + ' Ah';
+            document.getElementById('totalPanelCost').textContent = '$' + totalPanelCost.toFixed(2);
+            document.getElementById('totalBatteryCost').textContent = '$' + totalBatteryCost.toFixed(2);
+            document.getElementById('totalSystemCost').textContent = '$' + totalSystemCost.toFixed(2);
+            document.getElementById('annualProduction').textContent = annualProduction + ' kWh/year';
+
+            // Show results section
+            document.getElementById('resultsSection').classList.remove('hidden');
+
+            // Scroll to results
+            document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+
+        function generatePDF() {
+            const element = document.getElementById('content');
+            const opt = {
+                margin: 0.5,
+                filename: 'solar-system-calculation.pdf',
+                image: { type: 'jpeg', quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true },
+                jsPDF: { unit: 'in', format: 'letter', orientation: 'portrait' }
+            };
+
+            // Show loading state
+            const btn = event.target;
+            const originalText = btn.innerHTML;
+            btn.innerHTML = '<div class="loading"></div> Generating PDF...';
+            btn.disabled = true;
+
+            html2pdf().set(opt).from(element).save().then(() => {
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+            }).catch((error) => {
+                console.error('PDF generation error:', error);
+                btn.innerHTML = originalText;
+                btn.disabled = false;
+                alert('Error generating PDF. Please try again.');
+            });
+        }
+
+        function resetForm() {
+            if (confirm('Are you sure you want to reset all fields?')) {
+                document.getElementById('dailyUsage').value = '';
+                document.getElementById('peakHours').value = '5';
+                document.getElementById('panelWattage').value = '300';
+                document.getElementById('systemEfficiency').value = '85';
+                document.getElementById('backupDays').value = '2';
+                document.getElementById('batteryVoltage').value = '48';
+                document.getElementById('panelCost').value = '200';
+                document.getElementById('batteryCost').value = '500';
+                document.getElementById('resultsSection').classList.add('hidden');
+            }
+        }
+
+        // Add enter key support for inputs
+        document.querySelectorAll('input').forEach(input => {
+            input.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    calculateSystem();
+                }
+            });
+        });
+    </script>
+</body>
+</html>
