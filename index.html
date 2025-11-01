@@ -454,7 +454,7 @@
                     <i class="fas fa-calculator"></i>
                     Calculate System
                 </button>
-                <button class="btn btn-success" onclick="generatePDF()">
+                <button class="btn btn-success" onclick="generatePDF(event)">
                     <i class="fas fa-file-pdf"></i>
                     Download PDF Report
                 </button>
@@ -524,8 +524,16 @@
             const batteryCost = parseFloat(document.getElementById('batteryCost').value);
 
             // Validate inputs
-            if (isNaN(dailyUsage) || isNaN(peakHours) || isNaN(panelWattage) || isNaN(systemEfficiency)) {
+            if (isNaN(dailyUsage) || isNaN(peakHours) || isNaN(panelWattage) || isNaN(systemEfficiency) ||
+                isNaN(backupDays) || isNaN(batteryVoltage) || isNaN(panelCost) || isNaN(batteryCost)) {
                 alert('Please fill in all required fields with valid numbers.');
+                return;
+            }
+
+            // Validate positive values and prevent division by zero
+            if (dailyUsage <= 0 || peakHours <= 0 || panelWattage <= 0 || systemEfficiency <= 0 || 
+                batteryVoltage <= 0 || backupDays < 0 || panelCost < 0 || batteryCost < 0) {
+                alert('Please ensure all values are positive and greater than zero where required.');
                 return;
             }
 
@@ -567,7 +575,7 @@
             document.getElementById('resultsSection').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
-        function generatePDF() {
+        function generatePDF(event) {
             const element = document.getElementById('content');
             const opt = {
                 margin: 0.5,
